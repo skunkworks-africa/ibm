@@ -1,14 +1,3 @@
-To build a catalog that takes course information from the provided JSON feed and includes it in the `README.md`, we need to add steps in the workflow to download and process the JSON data. Here's how you can achieve this:
-
-1. **Download the JSON data.**
-2. **Parse the JSON data to extract course information.**
-3. **Update the `README.md` file with the course catalog.**
-
-### Complete Workflow with Course Catalog
-
-#### `.github/workflows/create-structure.yml`
-
-```yaml
 name: Create Directory Structure with Initial Content
 
 on:
