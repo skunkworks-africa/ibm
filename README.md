@@ -1,1 +1,0 @@
-# IBM LinuxONE Repository\n\nWelcome to the IBM LinuxONE Repository by Skunkworks.\n\n## Advocacy and Contributions\n\nWe encourage our team and community to contribute to this repository. Share your ideas, report issues, and submit pull requests to help us improve and grow.\n\nFor more information, contact us at [info@skunkworks.africa](mailto:info@skunkworks.africa).
