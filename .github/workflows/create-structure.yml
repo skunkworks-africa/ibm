@@ -1,0 +1,65 @@
+name: Create Directory Structure with Initial Content
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create-structure:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Create directories and files
+      run: |
+        mkdir -p ibm/docs
+        mkdir -p ibm/scripts
+        mkdir -p ibm/examples/ai
+        mkdir -p ibm/examples/cloud
+        mkdir -p ibm/examples/containers
+        
+        echo "# Getting Started with IBM LinuxONE" > ibm/docs/getting-started.md
+        echo "# Architecture Overview" > ibm/docs/architecture.md
+        echo "# Security Guidelines" > ibm/docs/security.md
+
+        echo "#!/bin/bash\n# Deployment script\n" > ibm/scripts/deploy.sh
+        echo "#!/bin/bash\n# Backup script\n" > ibm/scripts/backup.sh
+        echo "#!/bin/bash\n# Monitoring script\n" > ibm/scripts/monitor.sh
+
+        echo "# AI Example 1\nprint('Hello, AI 1')" > ibm/examples/ai/ai_example_1.py
+        echo "# AI Example 2\nprint('Hello, AI 2')" > ibm/examples/ai/ai_example_2.py
+
+        echo "# Cloud Example 1\napiVersion: v1\nkind: ConfigMap" > ibm/examples/cloud/cloud_example_1.yaml
+        echo "# Cloud Example 2\napiVersion: v1\nkind: Pod" > ibm/examples/cloud/cloud_example_2.yaml
+
+        echo "# Container Example 1\nFROM ubuntu:latest\nRUN apt-get update" > ibm/examples/containers/container_example_1.dockerfile
+        echo "# Container Example 2\nFROM alpine:latest\nRUN apk add --no-cache bash" > ibm/examples/containers/container_example_2.dockerfile
+
+        echo "MIT License\n\nCopyright (c) 2024 Skunkworks" > LICENSE
+        echo "# IBM LinuxONE Repository\n\nWelcome to the IBM LinuxONE Repository by Skunkworks.\n\n## Advocacy and Contributions\n\nWe encourage our team and community to contribute to this repository. Share your ideas, report issues, and submit pull requests to help us improve and grow.\n\nFor more information, contact us at [info@skunkworks.africa](mailto:info@skunkworks.africa)." > README.md
+
+    - name: Commit and push changes
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add ibm/ LICENSE README.md
+        git commit -m 'Create directory structure and initial files with content'
+        git push
+
+    - name: Create a new issue
+      uses: peter-evans/create-issue-from-file@v2
+      with:
+        title: "New Directory Structure Created"
+        content-filepath: .github/ISSUE_TEMPLATE/new-structure.md
+        labels: documentation, enhancement
+
+    - name: Send notification to Slack
+      if: success()
+      uses: slackapi/slack-github-action@v1.23.0
+      with:
+        slack-message: "New directory structure and initial content have been created in the IBM LinuxONE repository. Please check it out and start contributing! :tada:"
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
