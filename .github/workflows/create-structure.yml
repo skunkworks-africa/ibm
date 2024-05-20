@@ -3,8 +3,7 @@ name: Create Directory Structure with Initial Content
 on:
   push:
     branches:
-    - main
-    - release/*
+      - main
 
 jobs:
   create-structure:
@@ -72,7 +71,7 @@ jobs:
         run: |
           set -x  # Enable debugging
           echo "Parsing JSON and updating README.md"
-          courses=$(jq -r '.courses[] | "\(.title) - \(.url)"' courses.json)
+          courses=$(jq -r '.[] | "\(.TITLE) - \(.OVERVIEW)"' courses.json)
           {
             echo "# IBM LinuxONE Repository"
             echo ""
