@@ -21,47 +21,58 @@ jobs:
         mkdir -p ibm/examples/cloud
         mkdir -p ibm/examples/containers
         
-        echo "# Getting Started with IBM LinuxONE" > ibm/docs/getting-started.md
-        echo "# Architecture Overview" > ibm/docs/architecture.md
-        echo "# Security Guidelines" > ibm/docs/security.md
+        [[ ! -f ibm/docs/getting-started.md ]] && echo "# Getting Started with IBM LinuxONE" > ibm/docs/getting-started.md
+        [[ ! -f ibm/docs/architecture.md ]] && echo "# Architecture Overview" > ibm/docs/architecture.md
+        [[ ! -f ibm/docs/security.md ]] && echo "# Security Guidelines" > ibm/docs/security.md
 
-        echo "#!/bin/bash\n# Deployment script\n" > ibm/scripts/deploy.sh
-        echo "#!/bin/bash\n# Backup script\n" > ibm/scripts/backup.sh
-        echo "#!/bin/bash\n# Monitoring script\n" > ibm/scripts/monitor.sh
+        [[ ! -f ibm/scripts/deploy.sh ]] && echo "#!/bin/bash\n# Deployment script\n" > ibm/scripts/deploy.sh
+        [[ ! -f ibm/scripts/backup.sh ]] && echo "#!/bin/bash\n# Backup script\n" > ibm/scripts/backup.sh
+        [[ ! -f ibm/scripts/monitor.sh ]] && echo "#!/bin/bash\n# Monitoring script\n" > ibm/scripts/monitor.sh
 
-        echo "# AI Example 1\nprint('Hello, AI 1')" > ibm/examples/ai/ai_example_1.py
-        echo "# AI Example 2\nprint('Hello, AI 2')" > ibm/examples/ai/ai_example_2.py
+        [[ ! -f ibm/examples/ai/ai_example_1.py ]] && echo "# AI Example 1\nprint('Hello, AI 1')" > ibm/examples/ai/ai_example_1.py
+        [[ ! -f ibm/examples/ai/ai_example_2.py ]] && echo "# AI Example 2\nprint('Hello, AI 2')" > ibm/examples/ai/ai_example_2.py
 
-        echo "# Cloud Example 1\napiVersion: v1\nkind: ConfigMap" > ibm/examples/cloud/cloud_example_1.yaml
-        echo "# Cloud Example 2\napiVersion: v1\nkind: Pod" > ibm/examples/cloud/cloud_example_2.yaml
+        [[ ! -f ibm/examples/cloud/cloud_example_1.yaml ]] && echo "# Cloud Example 1\napiVersion: v1\nkind: ConfigMap" > ibm/examples/cloud/cloud_example_1.yaml
+        [[ ! -f ibm/examples/cloud/cloud_example_2.yaml ]] && echo "# Cloud Example 2\napiVersion: v1\nkind: Pod" > ibm/examples/cloud/cloud_example_2.yaml
 
-        echo "# Container Example 1\nFROM ubuntu:latest\nRUN apt-get update" > ibm/examples/containers/container_example_1.dockerfile
-        echo "# Container Example 2\nFROM alpine:latest\nRUN apk add --no-cache bash" > ibm/examples/containers/container_example_2.dockerfile
+        [[ ! -f ibm/examples/containers/container_example_1.dockerfile ]] && echo "# Container Example 1\nFROM ubuntu:latest\nRUN apt-get update" > ibm/examples/containers/container_example_1.dockerfile
+        [[ ! -f ibm/examples/containers/container_example_2.dockerfile ]] && echo "# Container Example 2\nFROM alpine:latest\nRUN apk add --no-cache bash" > ibm/examples/containers/container_example_2.dockerfile
 
-        echo "MIT License\n\nCopyright (c) 2024 Skunkworks" > LICENSE
-        echo "# IBM LinuxONE Repository\n\nWelcome to the IBM LinuxONE Repository by Skunkworks.\n\n## Advocacy and Contributions\n\nWe encourage our team and community to contribute to this repository. Share your ideas, report issues, and submit pull requests to help us improve and grow.\n\nFor more information, contact us at [info@skunkworks.africa](mailto:info@skunkworks.africa)." > README.md
+        [[ ! -f LICENSE ]] && echo "MIT License\n\nCopyright (c) 2024 Skunkworks" > LICENSE
+        [[ ! -f README.md ]] && echo "# IBM LinuxONE Repository\n\nWelcome to the IBM LinuxONE Repository by Skunkworks.\n\n## Advocacy and Contributions\n\nWe encourage our team and community to contribute to this repository. Share your ideas, report issues, and submit pull requests to help us improve and grow.\n\nFor more information, contact us at [info@skunkworks.africa](mailto:info@skunkworks.africa)." > README.md
 
     - name: Commit and push changes
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git add ibm/ LICENSE README.md
-        git commit -m 'Create directory structure and initial files with content'
-        git push
+        git diff-index --quiet HEAD || git commit -m 'Create directory structure and initial files with content'
+        git push || echo "No changes to commit"
 
     - name: Install GitHub CLI
+      if: always()
       uses: actions/setup-node@v3
       with:
         node-version: '16'
 
+    - name: Install GitHub CLI
+      if: always()
+      run: |
+        curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+        sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+        sudo apt-get update
+        sudo apt-get install gh
+
     - name: Create a new issue with GitHub CLI
+      if: always()
       run: |
         gh issue create --title "New Directory Structure Created" --body "$(cat .github/ISSUE_TEMPLATE/new-structure.md)" --label "documentation, enhancement"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Send notification to Slack
-      if: success()
+      if: always()
       uses: slackapi/slack-github-action@v1.23.0
       with:
         slack-message: "New directory structure and initial content have been created in the IBM LinuxONE repository. Please check it out and start contributing! :tada:"
