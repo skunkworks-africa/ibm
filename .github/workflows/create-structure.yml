@@ -18,25 +18,19 @@ jobs:
                     set -x  # Enable debugging
                     echo "Creating directories..."
                     mkdir -p ibm/docs ibm/scripts ibm/examples/ai ibm/examples/cloud ibm/examples/containers
-
                     echo "Creating files if they do not exist..."
                     [ ! -f ibm/docs/getting-started.md ] && echo "# Getting Started with IBM LinuxONE" > ibm/docs/getting-started.md
                     [ ! -f ibm/docs/architecture.md ] && echo "# Architecture Overview" > ibm/docs/architecture.md
                     [ ! -f ibm/docs/security.md ] && echo "# Security Guidelines" > ibm/docs/security.md
-
                     [ ! -f ibm/scripts/deploy.sh ] && echo -e "#!/bin/bash\n# Deployment script" > ibm/scripts/deploy.sh
                     [ ! -f ibm/scripts/backup.sh ] && echo -e "#!/bin/bash\n# Backup script" > ibm/scripts/backup.sh
                     [ ! -f ibm/scripts/monitor.sh ] && echo -e "#!/bin/bash\n# Monitoring script" > ibm/scripts/monitor.sh
-
                     [ ! -f ibm/examples/ai/ai_example_1.py ] && echo -e "# AI Example 1\nprint('Hello, AI 1')" > ibm/examples/ai/ai_example_1.py
                     [ ! -f ibm/examples/ai/ai_example_2.py ] && echo -e "# AI Example 2\nprint('Hello, AI 2')" > ibm/examples/ai/ai_example_2.py
-
                     [ ! -f ibm/examples/cloud/cloud_example_1.yaml ] && echo -e "# Cloud Example 1\napiVersion: v1\nkind: ConfigMap" > ibm/examples/cloud/cloud_example_1.yaml
                     [ ! -f ibm/examples/cloud/cloud_example_2.yaml ] && echo -e "# Cloud Example 2\napiVersion: v1\nkind: Pod" > ibm/examples/cloud/cloud_example_2.yaml
-
                     [ ! -f ibm/examples/containers/container_example_1.dockerfile ] && echo -e "# Container Example 1\nFROM ubuntu:latest\nRUN apt-get update" > ibm/examples/containers/container_example_1.dockerfile
                     [ ! -f ibm/examples/containers/container_example_2.dockerfile ] && echo -e "# Container Example 2\nFROM alpine:latest\nRUN apk add --no-cache bash" > ibm/examples/containers/container_example_2.dockerfile
-
                     [ ! -f LICENSE ] && echo -e "MIT License\n\nCopyright (c) 2024 Skunkworks" > LICENSE
 
             - name: Download Course Catalog JSON
