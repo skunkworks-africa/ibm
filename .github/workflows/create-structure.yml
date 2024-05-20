@@ -205,7 +205,7 @@ EOF
 
     - name: Create a new issue with GitHub CLI
       run: |
-        gh issue create --title "New Directory Structure Created" --body "$(cat .github/ISSUE_TEMPLATE/new-structure.md)" --label "documentation,enhancement"
+        gh issue create --title "New Directory Structure Created" --body "A new directory structure and initial files have been created in the IBM LinuxONE repository. Please review and contribute!" --label "documentation,enhancement"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -216,16 +216,5 @@ EOF
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 ```
-
-### Explanation:
-
-1. **Directory and File Creation**: Creates the necessary directories and files if they do not already exist.
-2. **Download Course Catalog JSON**: Downloads the course catalog JSON file from the IBM URL.
-3. **Process Course Catalog and Update README.md**: Parses the JSON data and updates the `README.md` file with the course catalog.
-4. **Commit and Push Changes**: Configures Git user information, adds the created directories and files to the commit, and pushes the changes.
-5. **GitHub CLI Installation**: Installs GitHub CLI for later steps.
-6. **Label Creation**: Ensures necessary labels exist in the repository for issues and pull requests.
-7. **Issue Creation**: Creates a new GitHub issue to notify about the new directory structure and initial content.
-8. **Slack Notification**: Sends a notification to Slack about the new directory structure and initial content.
 
 This workflow will automate the creation of the directory structure, initial files, update the `README.md` with course catalog information, and notify relevant channels.
