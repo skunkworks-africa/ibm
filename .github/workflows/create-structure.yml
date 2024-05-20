@@ -249,4 +249,4 @@ EOF
 7. **Slack Notification:**
    - Sends a notification to Slack about the new directory structure and initial content.
 
-This complete workflow will automate the creation of the directory structure, initial files, update the `README.md` with course catalog information, and notify relevant channels.
+This complete workflow will automate the creation of the directory structure, initial files, update the `README.md` with course catalog information, and notify relevant channels
