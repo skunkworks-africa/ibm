@@ -46,17 +46,15 @@ jobs:
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git add ibm/ LICENSE README.md
-        git diff-index --quiet HEAD || git commit -m 'Create directory structure and initial files with content'
-        git push || echo "No changes to commit"
+        git commit -m 'Create directory structure and initial files with content' || echo "No changes to commit"
+        git push || echo "No changes to push"
 
     - name: Install GitHub CLI
-      if: always()
       uses: actions/setup-node@v3
       with:
         node-version: '16'
 
     - name: Install GitHub CLI
-      if: always()
       run: |
         curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
         sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
@@ -64,15 +62,20 @@ jobs:
         sudo apt-get update
         sudo apt-get install gh
 
-    - name: Create a new issue with GitHub CLI
-      if: always()
+    - name: Ensure Labels Exist
       run: |
-        gh issue create --title "New Directory Structure Created" --body "$(cat .github/ISSUE_TEMPLATE/new-structure.md)" --label "documentation, enhancement"
+        gh label create "documentation" --description "Documentation related changes" --color "#1d76db" || echo "Label 'documentation' already exists"
+        gh label create "enhancement" --description "New feature or request" --color "#a2eeef" || echo "Label 'enhancement' already exists"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create a new issue with GitHub CLI
+      run: |
+        gh issue create --title "New Directory Structure Created" --body "$(cat .github/ISSUE_TEMPLATE/new-structure.md)" --label "documentation,enhancement"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Send notification to Slack
-      if: always()
       uses: slackapi/slack-github-action@v1.23.0
       with:
         slack-message: "New directory structure and initial content have been created in the IBM LinuxONE repository. Please check it out and start contributing! :tada:"
