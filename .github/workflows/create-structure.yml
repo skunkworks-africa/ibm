@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Create directories and files
         run: |
@@ -71,7 +71,7 @@ jobs:
         run: |
           set -x  # Enable debugging
           echo "Parsing JSON and updating README.md"
-          courses=$(jq -r '.[] | "\(.TITLE) - \(.OVERVIEW)"' courses.json)
+          courses=$(jq -r '.[] | "\(.TITLE) - \(.URL)"' courses.json)
           {
             echo "# IBM LinuxONE Repository"
             echo ""
@@ -120,9 +120,13 @@ jobs:
             echo "IBM Redbooks: LinuxONE"
             echo ""
             echo "## 📚 Course Catalog"
-            for course in $courses; do
-              echo "- $course"
-            done
+            echo "| Course Title | Link |"
+            echo "| --- | --- |"
+            while IFS= read -r line; do
+              title=$(echo "$line" | cut -d '-' -f 1)
+              url=$(echo "$line" | cut -d '-' -f 2)
+              echo "| $title | [Link]($url) |"
+            done <<< "$courses"
             echo ""
             echo "## 🎓 Educational Content"
             echo "| Resource | Description |"
@@ -166,9 +170,9 @@ jobs:
           git push || echo "No changes to push"
 
       - name: Install GitHub CLI
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4  # Updated to v4
         with:
-          node-version: '16'
+          node-version: '20'  # Updated to Node.js 20
 
       - name: Install GitHub CLI
         run: |
