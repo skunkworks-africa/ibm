@@ -17,31 +17,27 @@ jobs:
                 run: |
                     set -x  # Enable debugging
                     echo "Creating directories..."
-                    create_directory ibm/docs || { echo "Failed to create ibm/docs"; exit 1; }
-                    create_directory ibm/scripts || { echo "Failed to create ibm/scripts"; exit 1; }
-                    create_directory ibm/examples/ai || { echo "Failed to create ibm/examples/ai"; exit 1; }
-                    create_directory ibm/examples/cloud || { echo "Failed to create ibm/examples/cloud"; exit 1; }
-                    create_directory ibm/examples/containers || { echo "Failed to create ibm/examples/containers"; exit 1; }
+                    mkdir -p ibm/docs ibm/scripts ibm/examples/ai ibm/examples/cloud ibm/examples/containers
 
                     echo "Creating files if they do not exist..."
-                    create_file ibm/docs/getting-started.md "# Getting Started with IBM LinuxONE"
-                    create_file ibm/docs/architecture.md "# Architecture Overview"
-                    create_file ibm/docs/security.md "# Security Guidelines"
+                    [ ! -f ibm/docs/getting-started.md ] && echo "# Getting Started with IBM LinuxONE" > ibm/docs/getting-started.md
+                    [ ! -f ibm/docs/architecture.md ] && echo "# Architecture Overview" > ibm/docs/architecture.md
+                    [ ! -f ibm/docs/security.md ] && echo "# Security Guidelines" > ibm/docs/security.md
 
-                    create_file ibm/scripts/deploy.sh "#!/bin/bash\n# Deployment script"
-                    create_file ibm/scripts/backup.sh "#!/bin/bash\n# Backup script"
-                    create_file ibm/scripts/monitor.sh "#!/bin/bash\n# Monitoring script"
+                    [ ! -f ibm/scripts/deploy.sh ] && echo -e "#!/bin/bash\n# Deployment script" > ibm/scripts/deploy.sh
+                    [ ! -f ibm/scripts/backup.sh ] && echo -e "#!/bin/bash\n# Backup script" > ibm/scripts/backup.sh
+                    [ ! -f ibm/scripts/monitor.sh ] && echo -e "#!/bin/bash\n# Monitoring script" > ibm/scripts/monitor.sh
 
-                    create_file ibm/examples/ai/ai_example_1.py "# AI Example 1\nprint('Hello, AI 1')"
-                    create_file ibm/examples/ai/ai_example_2.py "# AI Example 2\nprint('Hello, AI 2')"
+                    [ ! -f ibm/examples/ai/ai_example_1.py ] && echo -e "# AI Example 1\nprint('Hello, AI 1')" > ibm/examples/ai/ai_example_1.py
+                    [ ! -f ibm/examples/ai/ai_example_2.py ] && echo -e "# AI Example 2\nprint('Hello, AI 2')" > ibm/examples/ai/ai_example_2.py
 
-                    create_file ibm/examples/cloud/cloud_example_1.yaml "# Cloud Example 1\napiVersion: v1\nkind: ConfigMap"
-                    create_file ibm/examples/cloud/cloud_example_2.yaml "# Cloud Example 2\napiVersion: v1\nkind: Pod"
+                    [ ! -f ibm/examples/cloud/cloud_example_1.yaml ] && echo -e "# Cloud Example 1\napiVersion: v1\nkind: ConfigMap" > ibm/examples/cloud/cloud_example_1.yaml
+                    [ ! -f ibm/examples/cloud/cloud_example_2.yaml ] && echo -e "# Cloud Example 2\napiVersion: v1\nkind: Pod" > ibm/examples/cloud/cloud_example_2.yaml
 
-                    create_file ibm/examples/containers/container_example_1.dockerfile "# Container Example 1\nFROM ubuntu:latest\nRUN apt-get update"
-                    create_file ibm/examples/containers/container_example_2.dockerfile "# Container Example 2\nFROM alpine:latest\nRUN apk add --no-cache bash"
+                    [ ! -f ibm/examples/containers/container_example_1.dockerfile ] && echo -e "# Container Example 1\nFROM ubuntu:latest\nRUN apt-get update" > ibm/examples/containers/container_example_1.dockerfile
+                    [ ! -f ibm/examples/containers/container_example_2.dockerfile ] && echo -e "# Container Example 2\nFROM alpine:latest\nRUN apk add --no-cache bash" > ibm/examples/containers/container_example_2.dockerfile
 
-                    create_file LICENSE "MIT License\n\nCopyright (c) 2024 Skunkworks"
+                    [ ! -f LICENSE ] && echo -e "MIT License\n\nCopyright (c) 2024 Skunkworks" > LICENSE
 
             - name: Download Course Catalog JSON
                 run: |
@@ -52,8 +48,90 @@ jobs:
                     set -x  # Enable debugging
                     echo "Parsing JSON and updating README.md"
                     courses=$(jq -r '.courses[] | "\(.title) - \(.url)"' courses.json)
-
-                    update_readme "IBM LinuxONE Repository" "$courses"
+                    {
+                        echo "# IBM LinuxONE Repository"
+                        echo ""
+                        echo "![GitHub release (latest by date)](https://img.shields.io/github/v/release/skunkworksza/ibm)"
+                        echo "![GitHub last commit](https://img.shields.io/github/last-commit/skunkworksza/ibm)"
+                        echo "![GitHub issues](https://img.shields.io/github/issues/skunkworksza/ibm)"
+                        echo "![GitHub pull requests](https://img.shields.io/github/issues-pr/skunkworksza/ibm)"
+                        echo ""
+                        echo "Welcome to the IBM LinuxONE Repository by Skunkworks. This repository contains various resources, scripts, and guides to help you get the most out of your IBM LinuxONE infrastructure."
+                        echo ""
+                        echo "## 📂 Directory Structure"
+                        echo ""
+                        echo "\`\`\`plaintext"
+                        echo "ibm/"
+                        echo "├── docs/"
+                        echo "│   ├── getting-started.md"
+                        echo "│   ├── architecture.md"
+                        echo "│   └── security.md"
+                        echo "├── scripts/"
+                        echo "│   ├── deploy.sh"
+                        echo "│   ├── backup.sh"
+                        echo "│   └── monitor.sh"
+                        echo "├── examples/"
+                        echo "│   ├── ai/"
+                        echo "│   │   ├── ai_example_1.py"
+                        echo "│   │   └── ai_example_2.py"
+                        echo "│   ├── cloud/"
+                        echo "│   │   ├── cloud_example_1.yaml"
+                        echo "│   │   └── cloud_example_2.yaml"
+                        echo "│   └── containers/"
+                        echo "│       ├── container_example_1.dockerfile"
+                        echo "│       └── container_example_2.dockerfile"
+                        echo "├── LICENSE"
+                        echo "└── README.md"
+                        echo "\`\`\`"
+                        echo ""
+                        echo "✨ Key Features"
+                        echo "Comprehensive Documentation: Step-by-step guides to get you started with IBM LinuxONE."
+                        echo "Automation Scripts: Useful scripts for deploying, backing up, and monitoring your LinuxONE environment."
+                        echo "Examples: Real-world examples of AI, cloud, and container applications."
+                        echo ""
+                        echo "## 📖 Learning Resources"
+                        echo "IBM LinuxONE Overview"
+                        echo "Getting Started with IBM LinuxONE"
+                        echo "IBM Developer: LinuxONE Tutorials"
+                        echo "IBM Redbooks: LinuxONE"
+                        echo ""
+                        echo "## 📚 Course Catalog"
+                        for course in $courses; do
+                            echo "- $course"
+                        done
+                        echo ""
+                        echo "## 🎓 Educational Content"
+                        echo "| Resource | Description |"
+                        echo "| --- | --- |"
+                        echo "| LinuxONE Academy | In-depth courses on LinuxONE. |"
+                        echo "| IBM Training | Broad range of IBM training courses. |"
+                        echo "| IBM Cloud Docs | Documentation for IBM Cloud services. |"
+                        echo "| Coursera: IBM Courses | Online courses offered by IBM. |"
+                        echo ""
+                        echo "## 📢 Famous Quotes"
+                        echo "\"The great thing about LinuxONE is the combination of performance, security, and scalability.\""
+                        echo "– Arvind Krishna, CEO of IBM"
+                        echo ""
+                        echo "\"IBM LinuxONE provides a superior experience for businesses that demand high availability and secure transactions.\""
+                        echo "– Ginni Rometty, Former CEO of IBM"
+                        echo ""
+                        echo "## 🛠️ How to Contribute"
+                        echo "1. Fork the repository."
+                        echo "2. Create a new branch (git checkout -b feature-branch)."
+                        echo "3. Commit your changes (git commit -m 'Add new feature')."
+                        echo "4. Push to the branch (git push origin feature-branch)."
+                        echo "5. Create a new Pull Request."
+                        echo ""
+                        echo "## 📞 Contact"
+                        echo "For any queries or support, please contact us at info@skunkworks.africa."
+                        echo ""
+                        echo "## 📄 License"
+                        echo "This project is licensed under the MIT License - see the LICENSE file for details."
+                        echo ""
+                        echo "![IBM Logo](https://example.com/ibm_logo.png)"
+                        echo ""
+                        echo "Stay tuned for more updates and contributions! 🌐🚀"
+                    } > README.md
 
             - name: Commit and push changes
                 run: |
@@ -95,117 +173,3 @@ jobs:
                     slack-message: "New directory structure and initial content have been created in the IBM LinuxONE repository. Please check it out and start contributing! :tada:"
                 env:
                     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-# Function to create a directory if it doesn't exist
-# Usage: create_directory <directory_path>
-# Example: create_directory ibm/docs
-- name: create_directory
-    run: |
-        directory_path=$1
-        [ ! -d "$directory_path" ] && mkdir -p "$directory_path" || echo "$directory_path already exists"
-
-# Function to create a file if it doesn't exist
-# Usage: create_file <file_path> <file_content>
-# Example: create_file ibm/docs/getting-started.md "# Getting Started with IBM LinuxONE"
-- name: create_file
-    run: |
-        file_path=$1
-        file_content=$2
-        [ ! -f "$file_path" ] && echo "$file_content" > "$file_path" || echo "$file_path already exists"
-
-# Function to update the README.md file with directory structure and course catalog
-# Usage: update_readme <repository_name> <course_list>
-# Example: update_readme "IBM LinuxONE Repository" "$courses"
-- name: update_readme
-    run: |
-        repository_name=$1
-        course_list=$2
-
-        cat << EOF > README.md
-# $repository_name
-
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/skunkworksza/ibm)
-![GitHub last commit](https://img.shields.io/github/last-commit/skunkworksza/ibm)
-![GitHub issues](https://img.shields.io/github/issues/skunkworksza/ibm)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/skunkworksza/ibm)
-
-Welcome to the $repository_name by Skunkworks. This repository contains various resources, scripts, and guides to help you get the most out of your IBM LinuxONE infrastructure.
-
----
-
-## 📂 Directory Structure
-
-\`\`\`plaintext
-ibm/
-├── docs/
-│   ├── getting-started.md
-│   ├── architecture.md
-│   └── security.md
-├── scripts/
-│   ├── deploy.sh
-│   ├── backup.sh
-│   └── monitor.sh
-├── examples/
-│   ├── ai/
-│   │   ├── ai_example_1.py
-│   │   └── ai_example_2.py
-│   ├── cloud/
-│   │   ├── cloud_example_1.yaml
-│   │   └── cloud_example_2.yaml
-│   └── containers/
-│       ├── container_example_1.dockerfile
-│       └── container_example_2.dockerfile
-├── LICENSE
-└── README.md
-\`\`\`
-
-✨ Key Features
-Comprehensive Documentation: Step-by-step guides to get you started with IBM LinuxONE.
-Automation Scripts: Useful scripts for deploying, backing up, and monitoring your LinuxONE environment.
-Examples: Real-world examples of AI, cloud, and container applications.
-
-📖 Learning Resources
-IBM LinuxONE Overview
-Getting Started with IBM LinuxONE
-IBM Developer: LinuxONE Tutorials
-IBM Redbooks: LinuxONE
-
-📚 Course Catalog
-EOF
-
-        for course in $course_list; do
-            echo "- [$course]" >> README.md
-        done
-
-        cat << 'EOF' >> README.md
-🎓 Educational Content
-Resource	Description
-LinuxONE Academy	In-depth courses on LinuxONE.
-IBM Training	Broad range of IBM training courses.
-IBM Cloud Docs	Documentation for IBM Cloud services.
-Coursera: IBM Courses	Online courses offered by IBM.
-
-📢 Famous Quotes
-"The great thing about LinuxONE is the combination of performance, security, and scalability."
-– Arvind Krishna, CEO of IBM
-
-"IBM LinuxONE provides a superior experience for businesses that demand high availability and secure transactions."
-– Ginni Rometty, Former CEO of IBM
-
-🛠️ How to Contribute
-Fork the repository.
-Create a new branch (git checkout -b feature-branch).
-Commit your changes (git commit -m 'Add new feature').
-Push to the branch (git push origin feature-branch).
-Create a new Pull Request.
-
-📞 Contact
-For any queries or support, please contact us at info@skunkworks.africa.
-
-📄 License
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-IBM Logo
-
-Stay tuned for more updates and contributions! 🌐🚀
-EOF
