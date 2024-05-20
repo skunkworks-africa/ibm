@@ -1,3 +1,6 @@
+Here is the fully supported `.github/workflows/create-structure.yml` file, ready for you to copy and paste:
+
+```yaml
 name: Create Directory Structure with Initial Content
 
 on:
@@ -175,8 +178,6 @@ EOF
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git add ibm/ LICENSE README.md
-
-
         git diff-index --quiet HEAD || git commit -m 'Create directory structure and initial files with content'
         git push || echo "No changes to push"
 
@@ -187,7 +188,9 @@ EOF
 
     - name: Install GitHub CLI
       run: |
-        curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+       
+
+ curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
         sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
         echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
         sudo apt-get update
@@ -216,26 +219,13 @@ EOF
 
 ### Explanation:
 
-1. **Download Course Catalog JSON:**
-   - The `curl` command downloads the JSON data from the provided URL and saves it as `courses.json`.
+1. **Directory and File Creation**: Creates the necessary directories and files if they do not already exist.
+2. **Download Course Catalog JSON**: Downloads the course catalog JSON file from the IBM URL.
+3. **Process Course Catalog and Update README.md**: Parses the JSON data and updates the `README.md` file with the course catalog.
+4. **Commit and Push Changes**: Configures Git user information, adds the created directories and files to the commit, and pushes the changes.
+5. **GitHub CLI Installation**: Installs GitHub CLI for later steps.
+6. **Label Creation**: Ensures necessary labels exist in the repository for issues and pull requests.
+7. **Issue Creation**: Creates a new GitHub issue to notify about the new directory structure and initial content.
+8. **Slack Notification**: Sends a notification to Slack about the new directory structure and initial content.
 
-2. **Process Course Catalog and Update README.md:**
-   - The `jq` command parses the JSON data to extract course titles and URLs.
-   - The extracted information is appended to the `README.md` under the "Course Catalog" section.
-
-3. **Commit and Push Changes:**
-   - Configures Git user information, adds the created directories and files to the commit, and pushes the changes.
-
-4. **GitHub CLI Installation:**
-   - Installs GitHub CLI for later steps.
-
-5. **Label Creation:**
-   - Ensures necessary labels exist in the repository for issues and pull requests.
-
-6. **Issue Creation:**
-   - Creates a new GitHub issue to notify about the new directory structure and initial content.
-
-7. **Slack Notification:**
-   - Sends a notification to Slack about the new directory structure and initial content.
-
-This complete workflow will automate the creation of the directory structure, initial files, update the `README.md` with course catalog information, and notify relevant channels
+This workflow will automate the creation of the directory structure, initial files, update the `README.md` with course catalog information, and notify relevant channels.
