@@ -49,12 +49,16 @@ jobs:
         git commit -m 'Create directory structure and initial files with content'
         git push
 
-    - name: Create a new issue
-      uses: peter-evans/create-issue-from-file@v2
+    - name: Install GitHub CLI
+      uses: actions/setup-node@v3
       with:
-        title: "New Directory Structure Created"
-        content-filepath: .github/ISSUE_TEMPLATE/new-structure.md
-        labels: documentation, enhancement
+        node-version: '16'
+
+    - name: Create a new issue with GitHub CLI
+      run: |
+        gh issue create --title "New Directory Structure Created" --body "$(cat .github/ISSUE_TEMPLATE/new-structure.md)" --label "documentation, enhancement"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Send notification to Slack
       if: success()
