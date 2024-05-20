@@ -1,73 +1,141 @@
 name: Create Directory Structure with Initial Content
 
 on:
-  push:
-    branches:
-      - main
+    push:
+        branches:
+            - main
 
 jobs:
-  create-structure:
-    runs-on: ubuntu-latest
+    create-structure:
+        runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+        steps:
+            - name: Checkout repository
+                uses: actions/checkout@v2
 
-    - name: Create directories and files
-      run: |
-        set -x  # Enable debugging
-        echo "Creating directories..."
-        mkdir -p ibm/docs || { echo "Failed to create ibm/docs"; exit 1; }
-        mkdir -p ibm/scripts || { echo "Failed to create ibm/scripts"; exit 1; }
-        mkdir -p ibm/examples/ai || { echo "Failed to create ibm/examples/ai"; exit 1; }
-        mkdir -p ibm/examples/cloud || { echo "Failed to create ibm/examples/cloud"; exit 1; }
-        mkdir -p ibm/examples/containers || { echo "Failed to create ibm/examples/containers"; exit 1; }
+            - name: Create directories and files
+                run: |
+                    set -x  # Enable debugging
+                    echo "Creating directories..."
+                    create_directory ibm/docs || { echo "Failed to create ibm/docs"; exit 1; }
+                    create_directory ibm/scripts || { echo "Failed to create ibm/scripts"; exit 1; }
+                    create_directory ibm/examples/ai || { echo "Failed to create ibm/examples/ai"; exit 1; }
+                    create_directory ibm/examples/cloud || { echo "Failed to create ibm/examples/cloud"; exit 1; }
+                    create_directory ibm/examples/containers || { echo "Failed to create ibm/examples/containers"; exit 1; }
 
-        echo "Creating files if they do not exist..."
-        [ ! -f ibm/docs/getting-started.md ] && echo "# Getting Started with IBM LinuxONE" > ibm/docs/getting-started.md || echo "ibm/docs/getting-started.md already exists"
-        [ ! -f ibm/docs/architecture.md ] && echo "# Architecture Overview" > ibm/docs/architecture.md || echo "ibm/docs/architecture.md already exists"
-        [ ! -f ibm/docs/security.md ] && echo "# Security Guidelines" > ibm/docs/security.md || echo "ibm/docs/security.md already exists"
+                    echo "Creating files if they do not exist..."
+                    create_file ibm/docs/getting-started.md "# Getting Started with IBM LinuxONE"
+                    create_file ibm/docs/architecture.md "# Architecture Overview"
+                    create_file ibm/docs/security.md "# Security Guidelines"
 
-        [ ! -f ibm/scripts/deploy.sh ] && echo "#!/bin/bash\n# Deployment script\n" > ibm/scripts/deploy.sh || echo "ibm/scripts/deploy.sh already exists"
-        [ ! -f ibm/scripts/backup.sh ] && echo "#!/bin/bash\n# Backup script\n" > ibm/scripts/backup.sh || echo "ibm/scripts/backup.sh already exists"
-        [ ! -f ibm/scripts/monitor.sh ] && echo "#!/bin/bash\n# Monitoring script\n" > ibm/scripts/monitor.sh || echo "ibm/scripts/monitor.sh already exists"
+                    create_file ibm/scripts/deploy.sh "#!/bin/bash\n# Deployment script"
+                    create_file ibm/scripts/backup.sh "#!/bin/bash\n# Backup script"
+                    create_file ibm/scripts/monitor.sh "#!/bin/bash\n# Monitoring script"
 
-        [ ! -f ibm/examples/ai/ai_example_1.py ] && echo "# AI Example 1\nprint('Hello, AI 1')" > ibm/examples/ai/ai_example_1.py || echo "ibm/examples/ai/ai_example_1.py already exists"
-        [ ! -f ibm/examples/ai/ai_example_2.py ] && echo "# AI Example 2\nprint('Hello, AI 2')" > ibm/examples/ai/ai_example_2.py || echo "ibm/examples/ai/ai_example_2.py already exists"
+                    create_file ibm/examples/ai/ai_example_1.py "# AI Example 1\nprint('Hello, AI 1')"
+                    create_file ibm/examples/ai/ai_example_2.py "# AI Example 2\nprint('Hello, AI 2')"
 
-        [ ! -f ibm/examples/cloud/cloud_example_1.yaml ] && echo "# Cloud Example 1\napiVersion: v1\nkind: ConfigMap" > ibm/examples/cloud/cloud_example_1.yaml || echo "ibm/examples/cloud/cloud_example_1.yaml already exists"
-        [ ! -f ibm/examples/cloud/cloud_example_2.yaml ] && echo "# Cloud Example 2\napiVersion: v1\nkind: Pod" > ibm/examples/cloud/cloud_example_2.yaml || echo "ibm/examples/cloud/cloud_example_2.yaml already exists"
+                    create_file ibm/examples/cloud/cloud_example_1.yaml "# Cloud Example 1\napiVersion: v1\nkind: ConfigMap"
+                    create_file ibm/examples/cloud/cloud_example_2.yaml "# Cloud Example 2\napiVersion: v1\nkind: Pod"
 
-        [ ! -f ibm/examples/containers/container_example_1.dockerfile ] && echo "# Container Example 1\nFROM ubuntu:latest\nRUN apt-get update" > ibm/examples/containers/container_example_1.dockerfile || echo "ibm/examples/containers/container_example_1.dockerfile already exists"
-        [ ! -f ibm/examples/containers/container_example_2.dockerfile ] && echo "# Container Example 2\nFROM alpine:latest\nRUN apk add --no-cache bash" > ibm/examples/containers/container_example_2.dockerfile || echo "ibm/examples/containers/container_example_2.dockerfile already exists"
+                    create_file ibm/examples/containers/container_example_1.dockerfile "# Container Example 1\nFROM ubuntu:latest\nRUN apt-get update"
+                    create_file ibm/examples/containers/container_example_2.dockerfile "# Container Example 2\nFROM alpine:latest\nRUN apk add --no-cache bash"
 
-        [ ! -f LICENSE ] && echo "MIT License\n\nCopyright (c) 2024 Skunkworks" > LICENSE || echo "LICENSE already exists"
-        
-    - name: Download Course Catalog JSON
-      run: |
-        curl -o courses.json https://www.ibm.com/training/files/GTPjson/CourseFeed_Global.json
+                    create_file LICENSE "MIT License\n\nCopyright (c) 2024 Skunkworks"
 
-    - name: Process Course Catalog and Update README.md
-      run: |
-        set -x  # Enable debugging
-        echo "Parsing JSON and updating README.md"
-        courses=$(jq -r '.courses[] | "\(.title) - \(.url)"' courses.json)
-        
-        cat << 'EOF' > README.md
-# IBM LinuxONE Repository
+            - name: Download Course Catalog JSON
+                run: |
+                    curl -o courses.json https://www.ibm.com/training/files/GTPjson/CourseFeed_Global.json
+
+            - name: Process Course Catalog and Update README.md
+                run: |
+                    set -x  # Enable debugging
+                    echo "Parsing JSON and updating README.md"
+                    courses=$(jq -r '.courses[] | "\(.title) - \(.url)"' courses.json)
+
+                    update_readme "IBM LinuxONE Repository" "$courses"
+
+            - name: Commit and push changes
+                run: |
+                    git config --global user.name 'github-actions[bot]'
+                    git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+                    git add ibm/ LICENSE README.md
+                    git diff-index --quiet HEAD || git commit -m 'Create directory structure and initial files with content'
+                    git push || echo "No changes to push"
+
+            - name: Install GitHub CLI
+                uses: actions/setup-node@v3
+                with:
+                    node-version: '16'
+
+            - name: Install GitHub CLI
+                run: |
+                    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+                    sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+                    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+                    sudo apt-get update
+                    sudo apt-get install gh
+
+            - name: Ensure Labels Exist
+                run: |
+                    gh label create "documentation" --description "Documentation related changes" --color "#1d76db" || echo "Label 'documentation' already exists"
+                    gh label create "enhancement" --description "New feature or request" --color "#a2eeef" || echo "Label 'enhancement' already exists"
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Create a new issue with GitHub CLI
+                run: |
+                    gh issue create --title "New Directory Structure Created" --body "A new directory structure and initial files have been created in the IBM LinuxONE repository. Please review and contribute!" --label "documentation,enhancement"
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Send notification to Slack
+                uses: slackapi/slack-github-action@v1.23.0
+                with:
+                    slack-message: "New directory structure and initial content have been created in the IBM LinuxONE repository. Please check it out and start contributing! :tada:"
+                env:
+                    SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+# Function to create a directory if it doesn't exist
+# Usage: create_directory <directory_path>
+# Example: create_directory ibm/docs
+- name: create_directory
+    run: |
+        directory_path=$1
+        [ ! -d "$directory_path" ] && mkdir -p "$directory_path" || echo "$directory_path already exists"
+
+# Function to create a file if it doesn't exist
+# Usage: create_file <file_path> <file_content>
+# Example: create_file ibm/docs/getting-started.md "# Getting Started with IBM LinuxONE"
+- name: create_file
+    run: |
+        file_path=$1
+        file_content=$2
+        [ ! -f "$file_path" ] && echo "$file_content" > "$file_path" || echo "$file_path already exists"
+
+# Function to update the README.md file with directory structure and course catalog
+# Usage: update_readme <repository_name> <course_list>
+# Example: update_readme "IBM LinuxONE Repository" "$courses"
+- name: update_readme
+    run: |
+        repository_name=$1
+        course_list=$2
+
+        cat << EOF > README.md
+# $repository_name
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/skunkworksza/ibm)
 ![GitHub last commit](https://img.shields.io/github/last-commit/skunkworksza/ibm)
 ![GitHub issues](https://img.shields.io/github/issues/skunkworksza/ibm)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/skunkworksza/ibm)
 
-Welcome to the IBM LinuxONE Repository by Skunkworks. This repository contains various resources, scripts, and guides to help you get the most out of your IBM LinuxONE infrastructure.
+Welcome to the $repository_name by Skunkworks. This repository contains various resources, scripts, and guides to help you get the most out of your IBM LinuxONE infrastructure.
 
 ---
 
 ## 📂 Directory Structure
 
-```plaintext
+\`\`\`plaintext
 ibm/
 ├── docs/
 │   ├── getting-started.md
@@ -89,129 +157,55 @@ ibm/
 │       └── container_example_2.dockerfile
 ├── LICENSE
 └── README.md
-```
+\`\`\`
 
----
+✨ Key Features
+Comprehensive Documentation: Step-by-step guides to get you started with IBM LinuxONE.
+Automation Scripts: Useful scripts for deploying, backing up, and monitoring your LinuxONE environment.
+Examples: Real-world examples of AI, cloud, and container applications.
 
-## ✨ Key Features
+📖 Learning Resources
+IBM LinuxONE Overview
+Getting Started with IBM LinuxONE
+IBM Developer: LinuxONE Tutorials
+IBM Redbooks: LinuxONE
 
-- **Comprehensive Documentation**: Step-by-step guides to get you started with IBM LinuxONE.
-- **Automation Scripts**: Useful scripts for deploying, backing up, and monitoring your LinuxONE environment.
-- **Examples**: Real-world examples of AI, cloud, and container applications.
-
----
-
-## 📖 Learning Resources
-
-- [IBM LinuxONE Overview](https://www.ibm.com/it-infrastructure/linuxone)
-- [Getting Started with IBM LinuxONE](https://www.ibm.com/it-infrastructure/linuxone/get-started)
-- [IBM Developer: LinuxONE Tutorials](https://developer.ibm.com/tutorials/?search=linuxone)
-- [IBM Redbooks: LinuxONE](https://www.redbooks.ibm.com/Redbooks.nsf/domains/linuxone)
-
----
-
-## 📚 Course Catalog
-
+📚 Course Catalog
 EOF
 
-        for course in $courses; do
-          echo "- [$course]" >> README.md
+        for course in $course_list; do
+            echo "- [$course]" >> README.md
         done
 
         cat << 'EOF' >> README.md
+🎓 Educational Content
+Resource	Description
+LinuxONE Academy	In-depth courses on LinuxONE.
+IBM Training	Broad range of IBM training courses.
+IBM Cloud Docs	Documentation for IBM Cloud services.
+Coursera: IBM Courses	Online courses offered by IBM.
 
----
+📢 Famous Quotes
+"The great thing about LinuxONE is the combination of performance, security, and scalability."
+– Arvind Krishna, CEO of IBM
 
-## 🎓 Educational Content
+"IBM LinuxONE provides a superior experience for businesses that demand high availability and secure transactions."
+– Ginni Rometty, Former CEO of IBM
 
-| Resource | Description |
-|----------|-------------|
-| [LinuxONE Academy](https://www.ibm.com/it-infrastructure/linuxone/academy) | In-depth courses on LinuxONE. |
-| [IBM Training](https://www.ibm.com/training) | Broad range of IBM training courses. |
-| [IBM Cloud Docs](https://cloud.ibm.com/docs) | Documentation for IBM Cloud services. |
-| [Coursera: IBM Courses](https://www.coursera.org/ibm) | Online courses offered by IBM. |
+🛠️ How to Contribute
+Fork the repository.
+Create a new branch (git checkout -b feature-branch).
+Commit your changes (git commit -m 'Add new feature').
+Push to the branch (git push origin feature-branch).
+Create a new Pull Request.
 
----
+📞 Contact
+For any queries or support, please contact us at info@skunkworks.africa.
 
-## 📢 Famous Quotes
+📄 License
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-> "The great thing about LinuxONE is the combination of performance, security, and scalability."  
-> – **Arvind Krishna, CEO of IBM**
+IBM Logo
 
-> "IBM LinuxONE provides a superior experience for businesses that demand high availability and secure transactions."  
-> – **Ginni Rometty, Former CEO of IBM**
-
----
-
-## 🛠️ How to Contribute
-
-1. **Fork the repository**.
-2. **Create a new branch** (`git checkout -b feature-branch`).
-3. **Commit your changes** (`git commit -m 'Add new feature'`).
-4. **Push to the branch** (`git push origin feature-branch`).
-5. **Create a new Pull Request**.
-
----
-
-## 📞 Contact
-
-For any queries or support, please contact us at [info@skunkworks.africa](mailto:info@skunkworks.africa).
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-![IBM Logo](https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg)
-
-_Stay tuned for more updates and contributions!_ 🌐🚀
+Stay tuned for more updates and contributions! 🌐🚀
 EOF
-
-    - name: Commit and push changes
-      run: |
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git add ibm/ LICENSE README.md
-        git diff-index --quiet HEAD || git commit -m 'Create directory structure and initial files with content'
-        git push || echo "No changes to push"
-
-    - name: Install GitHub CLI
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'
-
-    - name: Install GitHub CLI
-      run: |
-        curl -fsSL
-
- https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-        sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
-        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-        sudo apt-get update
-        sudo apt-get install gh
-
-    - name: Ensure Labels Exist
-      run: |
-        gh label create "documentation" --description "Documentation related changes" --color "#1d76db" || echo "Label 'documentation' already exists"
-        gh label create "enhancement" --description "New feature or request" --color "#a2eeef" || echo "Label 'enhancement' already exists"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Create a new issue with GitHub CLI
-      run: |
-        gh issue create --title "New Directory Structure Created" --body "A new directory structure and initial files have been created in the IBM LinuxONE repository. Please review and contribute!" --label "documentation,enhancement"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Send notification to Slack
-      uses: slackapi/slack-github-action@v1.23.0
-      with:
-        slack-message: "New directory structure and initial content have been created in the IBM LinuxONE repository. Please check it out and start contributing! :tada:"
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-```
-
-This workflow will automate the creation of the directory structure, initial files, update the `README.md` with course catalog information, and notify relevant channels.
