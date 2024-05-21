@@ -71,7 +71,7 @@ jobs:
         run: |
           set -x  # Enable debugging
           echo "Parsing JSON and updating README.md"
-          courses=$(jq -r '.[] | "\(.TITLE) - \(.URL)"' courses.json)
+          courses=$(jq -r '.[] | select(.CATEGORY == "IBM Course Categories") | "\(.TITLE) - \(.URL)"' courses.json)
           {
             echo "# IBM LinuxONE Repository"
             echo ""
@@ -159,13 +159,13 @@ jobs:
             echo "![IBM Logo](https://example.com/ibm_logo.png)"
             echo ""
             echo "Stay tuned for more updates and contributions! 🌐🚀"
-          } > README.md
+          } > index.md
 
       - name: Commit and push changes
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add ibm/ LICENSE README.md
+          git add ibm/ LICENSE README.md index.md
           git diff-index --quiet HEAD || git commit -m 'Create directory structure and initial files with content'
           git push || echo "No changes to push"
 
