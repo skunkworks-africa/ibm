@@ -44,10 +44,10 @@ Getting Started with IBM LinuxONE
 IBM Developer: LinuxONE Tutorials
 IBM Redbooks: LinuxONE
 
-## 📚 Course Catalog
-| Course Title | Link |
-| --- | --- |
-|  | [Link]() |
+## 📚 Course Categories
+| Category |
+| --- |
+| null |
 
 ## 🎓 Educational Content
 | Resource | Description |
