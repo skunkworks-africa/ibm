@@ -71,7 +71,7 @@ jobs:
         run: |
           set -x  # Enable debugging
           echo "Parsing JSON and updating README.md"
-          courses=$(jq -r '.[] | select(.CATEGORY == "IBM Course Categories") | "\(.TITLE) - \(.URL)"' courses.json)
+          categories=$(jq -r 'map(.CATEGORY) | unique | .[]' courses.json)
           {
             echo "# IBM LinuxONE Repository"
             echo ""
@@ -119,14 +119,12 @@ jobs:
             echo "IBM Developer: LinuxONE Tutorials"
             echo "IBM Redbooks: LinuxONE"
             echo ""
-            echo "## 📚 Course Catalog"
-            echo "| Course Title | Link |"
-            echo "| --- | --- |"
-            while IFS= read -r line; do
-              title=$(echo "$line" | cut -d '-' -f 1)
-              url=$(echo "$line" | cut -d '-' -f 2)
-              echo "| $title | [Link]($url) |"
-            done <<< "$courses"
+            echo "## 📚 Course Categories"
+            echo "| Category |"
+            echo "| --- |"
+            while IFS= read -r category; do
+              echo "| $category |"
+            done <<< "$categories"
             echo ""
             echo "## 🎓 Educational Content"
             echo "| Resource | Description |"
